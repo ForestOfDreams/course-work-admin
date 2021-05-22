@@ -12,14 +12,37 @@ import {
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { NavLink } from "react-router-dom";
+import axios from "axios";
 
 const Header = (props) => {
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { isLogin, setIsLogin } = useContext(Context);
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const { isLogin, setIsLogin } = useContext(Context);
+  const onSubmitHandler = (e) => {
+    console.log(login);
+    console.log(password);
+    e.preventDefault();
+    axios
+      .post("https://internships-hse.herokuapp.com/login", {
+        username: login,
+        password: password,
+      })
+      .then((response) => {
+        localStorage.setItem("token", response.headers.authorization);
+        setShow(false);
+        setIsLogin(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
@@ -39,7 +62,8 @@ const Header = (props) => {
             <Form.Control
               type="text"
               className="form-control"
-              // onChange={(event) => setName(event.target.value)}
+              value={login}
+              onChange={(event) => setLogin(event.target.value)}
               placeholder="Введите логин"
             />
           </Form.Group>
@@ -48,7 +72,8 @@ const Header = (props) => {
             <Form.Control
               type="text"
               className="form-control"
-              // onChange={(event) => setName(event.target.value)}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               placeholder="Введите пароль"
             />
           </Form.Group>
@@ -57,7 +82,9 @@ const Header = (props) => {
           <Button variant="secondary" onClick={handleClose}>
             Отменить
           </Button>
-          <Button variant="primary">Войти</Button>
+          <Button variant="primary" onClick={onSubmitHandler}>
+            Войти
+          </Button>
         </Modal.Footer>
       </Modal>
       <Navbar bg="light" expand="lg">
@@ -77,7 +104,16 @@ const Header = (props) => {
               <Button variant="outline-success" onClick={() => setShow(true)}>
                 Аутентификация
               </Button>
-              <Button variant="outline-success">Выход</Button>
+              <Button
+                variant="outline-success"
+                onClick={() => {
+                  localStorage.clear();
+                  setShow(false);
+                  setIsLogin(false);
+                }}
+              >
+                Выход
+              </Button>
             </ButtonGroup>
           </Nav>
         </Navbar.Collapse>

@@ -9,7 +9,11 @@ const OrganizationRow = (props) => {
       <td>{props.name}</td>
       <td>{props.description}</td>
       <td>{props.reference}</td>
-      <ActionRow />
+      <ActionRow
+        onDelete={props.onDelete}
+        onEdit={props.onEdit}
+        id={props.organization_id}
+      />
     </tr>
   );
 };

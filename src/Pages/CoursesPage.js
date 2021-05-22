@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Table, Modal, Button, Form } from "react-bootstrap";
+import { Table, Modal, Button, Form, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
@@ -19,8 +19,7 @@ const Courses = () => {
       .get("https://internships-hse.herokuapp.com/internships", {
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ2bGFkNV9hZG1pbiIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn0seyJhdXRob3JpdHkiOiJjb3Vyc2U6Y2hlY2sifSx7ImF1dGhvcml0eSI6ImNvdXJzZTpyZWFkIn0seyJhdXRob3JpdHkiOiJjb3Vyc2U6d3JpdGUifSx7ImF1dGhvcml0eSI6Im9yZ2FuaXphdGlvbjpyZWFkIn0seyJhdXRob3JpdHkiOiJvcmdhbml6YXRpb246d3JpdGUifSx7ImF1dGhvcml0eSI6InJldmlldzplZGl0In0seyJhdXRob3JpdHkiOiJzdHVkZW50OnJlYWQifSx7ImF1dGhvcml0eSI6InN0dWRlbnQ6d3JpdGUifV0sImlhdCI6MTYyMTAzMzczNiwiZXhwIjoxNjIxODE0NDAwfQ.4CCDiLomkxa3TRLhR7t4CxE3VfoXshT1OaKvfIiWrqfhNM5bIk0RvgT8It2s4yhH3UdeIAmPrZDVLo0yPfUuJw",
+          Authorization: localStorage.getItem("token"),
         },
       })
       .then((response) => {
@@ -36,12 +35,12 @@ const Courses = () => {
       .delete(`https://internships-hse.herokuapp.com/internships/${id}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ2bGFkNV9hZG1pbiIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn0seyJhdXRob3JpdHkiOiJjb3Vyc2U6Y2hlY2sifSx7ImF1dGhvcml0eSI6ImNvdXJzZTpyZWFkIn0seyJhdXRob3JpdHkiOiJjb3Vyc2U6d3JpdGUifSx7ImF1dGhvcml0eSI6Im9yZ2FuaXphdGlvbjpyZWFkIn0seyJhdXRob3JpdHkiOiJvcmdhbml6YXRpb246d3JpdGUifSx7ImF1dGhvcml0eSI6InJldmlldzplZGl0In0seyJhdXRob3JpdHkiOiJzdHVkZW50OnJlYWQifSx7ImF1dGhvcml0eSI6InN0dWRlbnQ6d3JpdGUifV0sImlhdCI6MTYyMTAzMzczNiwiZXhwIjoxNjIxODE0NDAwfQ.4CCDiLomkxa3TRLhR7t4CxE3VfoXshT1OaKvfIiWrqfhNM5bIk0RvgT8It2s4yhH3UdeIAmPrZDVLo0yPfUuJw",
+          Authorization: localStorage.getItem("token"),
         },
       })
       .then((response) => {
         // console.log(response);
+        fetchCourses();
       });
   };
 
@@ -65,32 +64,38 @@ const Courses = () => {
   };
 
   const changeConfirmHandler = () => {
-    axios.put(
-      `https://internships-hse.herokuapp.com/internships/${editableCourse.internship_id}`,
-      {
-        name: name,
-        description: description,
-        startDate: startDate,
-        finishDate: finishDate,
-        country: country,
-        subject: subject,
-        language: language,
-        price: price,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ2bGFkNV9hZG1pbiIsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn0seyJhdXRob3JpdHkiOiJjb3Vyc2U6Y2hlY2sifSx7ImF1dGhvcml0eSI6ImNvdXJzZTpyZWFkIn0seyJhdXRob3JpdHkiOiJjb3Vyc2U6d3JpdGUifSx7ImF1dGhvcml0eSI6Im9yZ2FuaXphdGlvbjpyZWFkIn0seyJhdXRob3JpdHkiOiJvcmdhbml6YXRpb246d3JpdGUifSx7ImF1dGhvcml0eSI6InJldmlldzplZGl0In0seyJhdXRob3JpdHkiOiJzdHVkZW50OnJlYWQifSx7ImF1dGhvcml0eSI6InN0dWRlbnQ6d3JpdGUifV0sImlhdCI6MTYyMTAzMzczNiwiZXhwIjoxNjIxODE0NDAwfQ.4CCDiLomkxa3TRLhR7t4CxE3VfoXshT1OaKvfIiWrqfhNM5bIk0RvgT8It2s4yhH3UdeIAmPrZDVLo0yPfUuJw",
+    axios
+      .put(
+        `https://internships-hse.herokuapp.com/internships/${editableCourse.internship_id}`,
+        {
+          name: name,
+          description: description,
+          startDate: startDate,
+          finishDate: finishDate,
+          country: country,
+          subject: subject,
+          language: language,
+          price: price,
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then(() => {
+        fetchCourses();
+      });
     handleClose();
   };
 
   useEffect(() => {
+    if (localStorage.getItem("token")) {
+      setIsLogin(true);
+    }
     fetchCourses();
-  }, [changeConfirmHandler]);
+  }, []);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -107,7 +112,21 @@ const Courses = () => {
   const [organization, setOrganization] = useState({});
   const [internships, setInternships] = useState([]);
 
-  //console.log(courses);
+  console.log(isLogin);
+
+  if (!isLogin) {
+    return (
+      <Alert variant="warning">
+        <Alert.Heading>Неавторизован!</Alert.Heading>
+        <p>
+          Необходимо авторизоваться. Нажмите на кнопку "Аутентификация" в
+          верхнем меню
+        </p>
+        <div className="d-flex justify-content-end"></div>
+      </Alert>
+    );
+  }
+
   return (
     <>
       <Modal
